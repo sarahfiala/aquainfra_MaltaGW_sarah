@@ -50,7 +50,7 @@ RUN dpkg --add-architecture i386
 RUN apt update && apt -y install wine wine32:i386 wine64 winbind xvfb
 
 # Copy and unzip
-COPY ./iMOD5.zip /app/iMOD5.zip
+COPY ./iMOD_5.6.1.zip /app/iMOD5.zip
 #new comment
 COPY ./installIModLinux.sh /app/
 RUN chmod u+x /app/installIModLinux.sh && /app/installIModLinux.sh /app/iMOD5.zip /app
