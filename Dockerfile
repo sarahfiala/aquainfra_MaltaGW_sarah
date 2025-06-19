@@ -9,17 +9,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 WORKDIR /app
 
 
-#COPY THE REQUIREMENTS
-RUN mkdir -p /app/example_inputs
-COPY ./example_inputs/ /app/example_inputs
-
-RUN mkdir -p /app/model_files/bin
-COPY ./model_files/bin/ /app/model_files/bin
-
-RUN mkdir -p /app/SCRIPTS
-COPY ./SCRIPTS/ /app/SCRIPTS
-
-
 # Install Python3, pip, and dependencies for virtual environment
 RUN apt-get update && apt-get install -y \
     python3 \
@@ -32,8 +21,6 @@ RUN apt-get update && apt-get install -y \
 	gfortran \
     && apt-get clean
 
-# Set the working directory in the container
-WORKDIR /app
 
 # Create a virtual environment
 RUN python3 -m venv /venv
@@ -58,4 +45,26 @@ RUN chmod u+x /app/installIModLinux.sh && /app/installIModLinux.sh /app/iMOD5.zi
 
 #link to the python virtual enviornment
 RUN ln -s /venv /app/
+
+
+
+#COPY THE FOLDERS RELATED TO SEAWAT RUN
+RUN mkdir -p /app/example_inputs
+COPY ./example_inputs/ /app/example_inputs
+
+RUN mkdir -p /app/model_files/bin
+COPY ./model_files/bin/ /app/model_files/bin
+
+RUN mkdir -p /app/SCRIPTS
+COPY ./SCRIPTS/ /app/SCRIPTS
+
+RUN mkdir -p /out
+COPY ./SCRIPTS/ /app/SCRIPTS
+
+
+
+# Add an entrypoint that can deal with CLI arguments that contain spaces:
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
