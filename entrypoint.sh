@@ -1,4 +1,5 @@
 #!/bin/sh
+cd /app/SCRIPTS
 "/app/SCRIPTS/runSeaWat.sh" "$@"
 
 
