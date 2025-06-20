@@ -8,14 +8,14 @@ iModLink="${iModDir}/testRuns/MaltaGW_Model"
 MOD_DIR="${BASEDIR}/model_files/malta_simulation/Malta_Model/malta_sp0/Malta_Model"
 NPROCS=1
 NAMFILE="Malta_Model.nam_swt"
-OUTPUT_DIR="${BASEDIR}/example_results"
+#OUTPUT_DIR="${BASEDIR}/example_results"
 
 venvDir="${BASEDIR}/venv"
 
 cwd=$( pwd )
-mkdir -p "$OUTPUT_DIR"
+#mkdir -p "$OUTPUT_DIR"
 
-LOGFILE="${OUTPUT_DIR}/run_$(date +%Y%m%d_%H%M%S).log"
+#LOGFILE="${OUTPUT_DIR}/run_$(date +%Y%m%d_%H%M%S).log"
 
 
 #clear the model file
