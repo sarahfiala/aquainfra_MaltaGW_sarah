@@ -44,7 +44,7 @@ def setupSeaWAT (user_sealevels, sealevel_int, user_recharge):
     # Executables
     #imod_path = os.path.join(project_root, 'model_files', 'bin', '_imodwq', '_imodwq', 'imod-wq_svn392_x64r.exe')
     #seawat_exe_dir = os.path.join(project_root, 'model_files', 'bin', 'SEAWAT', 'SEAWAT', 'swt_v4_00_05')
-    seawat_exe_dir = os.path.join(project_root, 'model_files', 'bin', 'SEAWAT', 'swtv4')
+    seawat_exe_dir = os.path.join(project_root, 'SEAWAT', 'swt_v4.exe')
 
     #USER INPUTS
 
@@ -322,7 +322,7 @@ def setupSeaWAT (user_sealevels, sealevel_int, user_recharge):
     #timprs_lst = list(np.linspace(1,total_sim_time,(nper-1),endpoint=True,dtype=int))
     timprs_lst = np.cumsum(perlen).tolist()
     btn = flopy.mt3d.Mt3dBtn(mswt, nprs=nprs, timprs=timprs_lst, prsity=porosity, sconc=sconc_arr,
-                             ifmtcn=ifmtcn, chkmas=chkmas, nprobs=nprobs, nprmas=nprmas,dt0=1000)
+                             ifmtcn=ifmtcn, chkmas=chkmas, nprobs=nprobs, nprmas=nprmas,dt0=1000, saveucn=True)
     #%% ADV Package
     adv = flopy.mt3d.Mt3dAdv(mswt, mixelm=0, mxpart=2000000)
 
@@ -402,7 +402,10 @@ def setupSeaWAT (user_sealevels, sealevel_int, user_recharge):
     nam_lines = [
         'PKSF 27 ' + mini_modelname + '.pksf', 
         'PKST 35 ' + mini_modelname + '.pkst', 
-        'DATA 40 LOAD.ASC'
+        'DATA 40 LOAD.ASC',
+		'DATA(BINARY) 1 ' + mini_modelname + '.cbc',
+		'DATA(BINARY) 30 ' + mini_modelname + '.hds',
+		'DATA(BINARY) 50 ' + mini_modelname + '.ucn'
     ]
 
     with open(os.path.join(mini_sp_dir, mini_modelname + '.nam_swt'), 'a') as f:

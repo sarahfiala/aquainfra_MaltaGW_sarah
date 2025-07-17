@@ -1,9 +1,10 @@
 #!/bin/bash
 
 BASEDIR="/app"
-iModDir="${BASEDIR}/iMOD_exe"
-IMOD_WQ_BIN="${iModDir}/bin/iMOD-WQ_V5_6_1.exe"
-iModLink="${iModDir}/testRuns/MaltaGW_Model"
+#iModDir="${BASEDIR}/iMOD_exe"
+#IMOD_WQ_BIN="${iModDir}/bin/iMOD-WQ_V5_6_1.exe"
+#iModLink="${iModDir}/testRuns/MaltaGW_Model"
+SEAWATEXE="${BASEDIR}/SEAWAT/swt_v4.exe"
 
 MOD_DIR="${BASEDIR}/model_files/malta_simulation/Malta_Model/malta_sp0/Malta_Model"
 NPROCS=1
@@ -59,13 +60,13 @@ echo
 
 # --------- RUN THE IMOD MODEL ------------- 
 echo "Starting iMOD-WQ for sm_1 ..."
-export WINEPREFIX="${iModDir}/iMOD_wine"
+#export WINEPREFIX="${iModDir}/iMOD_wine"
 cd ${MOD_DIR}
 pwd
-echo "wine \"${IMOD_WQ_BIN}\" \"${NAMFILE}\""
+echo "wine \"${SEAWATEXE}\" \"${NAMFILE}\""
 echo "-------------------------"
-wine "${IMOD_WQ_BIN}" "${NAMFILE}"
-#wine "${IMOD_WQ_BIN}" "${NAMFILE}" > "${LOGFILE}" 2>&1
+wine "${SEAWATEXE}" "${NAMFILE}"
+#wine "${SEAWATEXE}" "${NAMFILE}" > "${LOGFILE}" 2>&1
 
 echo
 echo "Copying the output"

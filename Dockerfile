@@ -37,10 +37,8 @@ RUN dpkg --add-architecture i386
 RUN apt update && apt -y install wine wine32:i386 wine64 winbind xvfb
 
 # Copy and unzip
-COPY ./iMOD_5.6.1.zip /app/iMOD5.zip
-#new comment
-COPY ./installIModLinux.sh /app/
-RUN chmod u+x /app/installIModLinux.sh && /app/installIModLinux.sh /app/iMOD5.zip /app
+RUN mkdir -p /app/SEAWAT
+COPY ./swt_v4x64.exe /app/SEAWAT/swt_v4.exe
 
 
 #link to the python virtual enviornment
@@ -52,8 +50,7 @@ RUN ln -s /venv /app/
 RUN mkdir -p /app/example_inputs
 COPY ./example_inputs/ /app/example_inputs
 
-RUN mkdir -p /app/model_files/bin
-COPY ./model_files/bin/ /app/model_files/bin
+RUN mkdir -p /app/model_files
 
 RUN mkdir -p /app/SCRIPTS
 COPY ./SCRIPTS/ /app/SCRIPTS
