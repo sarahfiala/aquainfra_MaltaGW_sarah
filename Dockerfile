@@ -38,7 +38,9 @@ RUN apt update && apt -y install wine wine32:i386 wine64 winbind xvfb
 
 # Copy and unzip
 RUN mkdir -p /app/SEAWAT
-COPY ./swt_v4x64.exe /app/SEAWAT/swt_v4.exe
+COPY /SEAWAT /app/SEAWAT
+#COPY ./swt_v4x64.exe /app/SEAWAT/swt_v4.exe
+RUN chmod ugo+x /app/SEAWAT/swt_v4.exe
 
 
 #link to the python virtual enviornment

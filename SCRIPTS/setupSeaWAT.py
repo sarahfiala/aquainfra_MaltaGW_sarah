@@ -45,6 +45,8 @@ def setupSeaWAT (user_sealevels, sealevel_int, user_recharge):
     #imod_path = os.path.join(project_root, 'model_files', 'bin', '_imodwq', '_imodwq', 'imod-wq_svn392_x64r.exe')
     #seawat_exe_dir = os.path.join(project_root, 'model_files', 'bin', 'SEAWAT', 'SEAWAT', 'swt_v4_00_05')
     seawat_exe_dir = os.path.join(project_root, 'SEAWAT', 'swt_v4.exe')
+    modflow_exe_dir = os.path.join(project_root, 'SEAWAT', 'mf2005.exe')
+    mt3d_exe_dir = os.path.join(project_root, 'SEAWAT', 'mt3dms.exe')
 
     #USER INPUTS
 
@@ -122,6 +124,9 @@ def setupSeaWAT (user_sealevels, sealevel_int, user_recharge):
     mini_sp_dir = os.path.join(sp_dir, mini_modelname)
 
     # Create SEAWAT model object
+    #flopy.modflow.Modflow.set_exe_path(modflow_exe_dir)
+    #flopy.mt3d.Mt3dms.set_exe_path(mt3d_exe_dir)
+    #flopy.seawat.Seawat.set_exe_path(seawat_exe_dir)
     mswt = flopy.seawat.Seawat(mini_modelname, 'nam_swt', model_ws=mini_sp_dir, exe_name=seawat_exe_dir)
 
     #%% Fill in hydraulic conductivity, porosity, and IBOUND arrays
@@ -180,6 +185,17 @@ def setupSeaWAT (user_sealevels, sealevel_int, user_recharge):
     bas = flopy.modflow.ModflowBas(mswt, ibound = ibound_arr, strt = strt_arr)
 
     #%% LPF Package
+    #%% Flow Solver (PCG Package)
+    pcg = flopy.modflow.ModflowPcg(
+        mswt,
+        hclose=1e-6,
+        rclose=1e-3,
+        maxiter=100,
+        iter1=100,
+		npcond=1,
+        relax=0.98
+    )
+
 
     # setting anisotropy to the hyd. conductivity field
     vk_arr = hk_arr * 0.1 
@@ -299,12 +315,10 @@ def setupSeaWAT (user_sealevels, sealevel_int, user_recharge):
     unitnumber = [14, 30, 52, 51]
 
     # Output control settings
-    spd = {(0, 0): ['SAVE HEAD', 'SAVE BUDGET', 'PRINT HEAD', 'PRINT BUDGET',
-                    'SAVE HEADTEC', 'SAVE CONCTEC', 'SAVE VXTEC', 'SAVE VYTEC', 'SAVE VZTEC']}
+    spd = {};
 
     for t in range(nper):
-        spd[(t, nstp[t] - 1)] = ['SAVE HEAD', 'SAVE BUDGET', 'PRINT HEAD', 'PRINT BUDGET',
-                                 'SAVE HEADTEC', 'SAVE CONCTEC', 'SAVE VXTEC', 'SAVE VYTEC', 'SAVE VZTEC']
+        spd[(t, nstp[t] - 1)] = ['SAVE HEAD', 'SAVE BUDGET', 'PRINT HEAD', 'PRINT BUDGET']
 
     oc = flopy.modflow.ModflowOc(mswt, ihedfm=ihedfm, stress_period_data=spd,
                                  unitnumber=unitnumber, compact=True)
@@ -321,8 +335,35 @@ def setupSeaWAT (user_sealevels, sealevel_int, user_recharge):
     total_sim_time=sum(perlen)
     #timprs_lst = list(np.linspace(1,total_sim_time,(nper-1),endpoint=True,dtype=int))
     timprs_lst = np.cumsum(perlen).tolist()
-    btn = flopy.mt3d.Mt3dBtn(mswt, nprs=nprs, timprs=timprs_lst, prsity=porosity, sconc=sconc_arr,
-                             ifmtcn=ifmtcn, chkmas=chkmas, nprobs=nprobs, nprmas=nprmas,dt0=1000, saveucn=True)
+    btn = flopy.mt3d.Mt3dBtn(
+        model=mswt,
+        prsity=porosity,
+        sconc=sconc_arr,
+        nper=nper,                   # ✅ REQUIRED: number of stress periods
+        ncomp=1,                     # ✅ REQUIRED: number of components (salinity = 1)
+		mcomp=1,
+        dt0=1000,                   # initial transport timestep
+        nprs=nprs,
+        timprs=timprs_lst,
+        ifmtcn=ifmtcn,
+        chkmas=chkmas,
+        nprobs=nprobs,
+        nprmas=nprmas
+    );
+    #btn = flopy.mt3d.Mt3dBtn(mswt, nprs=nprs, timprs=timprs_lst, prsity=porosity, sconc=sconc_arr,
+    #                         ifmtcn=ifmtcn, chkmas=chkmas, nprobs=nprobs, nprmas=nprmas,dt0=1000)
+
+
+    gcg = flopy.mt3d.Mt3dGcg(
+        model=mswt,
+        mxiter=1,     # number of outer iterations (1 is typical for SEAWAT)
+        iter1=50,     # number of inner iterations
+        isolve=3,     # solver type: 3 = BiCGSTAB (recommended)
+        cclose=1e-6,  # convergence criterion
+        iprgcg=0      # print option
+    )
+
+
     #%% ADV Package
     adv = flopy.mt3d.Mt3dAdv(mswt, mixelm=0, mxpart=2000000)
 
@@ -400,11 +441,11 @@ def setupSeaWAT (user_sealevels, sealevel_int, user_recharge):
 
     # Open the nam_swt file and append these three lines
     nam_lines = [
-        'PKSF 27 ' + mini_modelname + '.pksf', 
-        'PKST 35 ' + mini_modelname + '.pkst', 
+        '#PKSF 27 ' + mini_modelname + '.pksf', 
+        '#PKST 35 ' + mini_modelname + '.pkst', 
         'DATA 40 LOAD.ASC',
-		'DATA(BINARY) 1 ' + mini_modelname + '.cbc',
-		'DATA(BINARY) 30 ' + mini_modelname + '.hds',
+		'#DATA(BINARY) 1 ' + mini_modelname + '.cbc',
+		'#DATA(BINARY) 30 ' + mini_modelname + '.hds',
 		'DATA(BINARY) 50 ' + mini_modelname + '.ucn'
     ]
 
