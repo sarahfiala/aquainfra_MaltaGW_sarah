@@ -58,7 +58,6 @@ RUN mkdir -p /app/SCRIPTS
 COPY ./SCRIPTS/ /app/SCRIPTS
 
 RUN mkdir -p /out
-COPY ./SCRIPTS/ /app/SCRIPTS
 
 
 

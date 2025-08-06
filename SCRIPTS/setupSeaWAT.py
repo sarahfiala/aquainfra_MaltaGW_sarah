@@ -25,6 +25,7 @@ def getArgs ():
     parser.add_argument("--user_sealevels", type=str, default="[-2.675, -1.3375, 0.0]", help="List of sea levels");
     parser.add_argument("--sealevel_int", type=int, default=500, help="Interval duration in years, i.e., time between each sealevel in the list");
     parser.add_argument("--user_recharge", type=float, default=0.00125, help="Recharge value");
+    parser.add_argument("--Project_root", type=str, default="/app", help="Project root directory");
     return (parser.parse_args());
 
 
@@ -190,7 +191,7 @@ def setupSeaWAT (user_sealevels, sealevel_int, user_recharge):
         mswt,
         hclose=1e-6,
         rclose=1e-3,
-        maxiter=100,
+        mxiter=100,
         iter1=100,
 		npcond=1,
         relax=0.98

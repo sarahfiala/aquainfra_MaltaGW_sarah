@@ -48,7 +48,7 @@ fi
 
 
 
-#---------- RUN THE PYTHON to prepare the iMOD input file ---------------------
+#---------- RUN THE PYTHON to prepare the name file ---------------------
 source ${venvDir}/bin/activate
 echo "Executing the python script to prepare the input file for the GW model"
 echo "python3 setupSeaWAT.py ${cuser_sealevels} ${csealevel_int} ${cuser_recharge} "
@@ -58,8 +58,8 @@ echo "----------------------------"
 echo
 
 
-# --------- RUN THE IMOD MODEL ------------- 
-echo "Starting iMOD-WQ for sm_1 ..."
+# --------- RUN THE SEAWAT MODEL ------------- 
+echo "Starting SEAWAT ..."
 #export WINEPREFIX="${iModDir}/iMOD_wine"
 cd ${MOD_DIR}
 pwd
@@ -67,18 +67,21 @@ echo "wine \"${SEAWATEXE}\" \"${NAMFILE}\""
 echo "-------------------------"
 wine "${SEAWATEXE}" "${NAMFILE}"
 #wine "${SEAWATEXE}" "${NAMFILE}" > "${LOGFILE}" 2>&1
-
-echo
-echo "Copying the output"
-ofpath="${MOD_DIR}/concvelo.tec"
-if [ -f ${ofpath} ];
-then
-	echo "mv -f ${ofpath} /out/salt_flow.tec"
-	mv -f ${ofpath} /out/salt_flow.tec
-fi
-
-
 cd ${cwd}
+
+
+
+#---------- RUN THE PYTHON to generate the file nc file ---------------------
+source ${venvDir}/bin/activate
+echo "Executing the python script to convert the SEAWAT run into netcdf"
+echo "python3 setupSeaWAT.py ${cuser_sealevels} ${csealevel_int} ${cuser_recharge} "
+python3 convertSeaWatOutputToNC.py --ucn ${MOD_DIR}/MT3D001.UCN --dis ${MOD_DIR}/Malta_Model.dis --output /out/salt_flow.nc
+deactivate
+echo "----------------------------"
+echo
+
+
+
 
 EXIT_CODE=$?
 if [ $EXIT_CODE -eq 0 ]; then
