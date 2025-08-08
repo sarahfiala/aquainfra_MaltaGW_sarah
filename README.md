@@ -10,6 +10,15 @@ This container accepts the following command-line arguments at runtime:
 | `--sealevel_int`    | Interval duration in years between each sea level in the list.             | `500`                     |
 | `--user_recharge`   | Recharge value used in the simulation.                                     | `0.00125`                 |
 
+
+## Output:
+The simulation output is saved to:
+The output is found in: 
+```
+/out/salt_flow.nc
+```
+
+
 ### 📌 Example Usage
 
 ```bash
@@ -17,5 +26,5 @@ docker run it --name malta-container malta:latest \
   --user_sealevels "[-3.0, -2.0, -1.0]" \
   --sealevel_int 250 \
   --user_recharge 0.002
-
+```
 
