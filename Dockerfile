@@ -51,6 +51,7 @@ RUN ln -s /venv /app/
 #COPY THE FOLDERS RELATED TO SEAWAT RUN
 RUN mkdir -p /app/example_inputs
 COPY ./example_inputs/ /app/example_inputs
+RUN gunzip -f /app/example_inputs/*.gz
 
 RUN mkdir -p /app/model_files
 

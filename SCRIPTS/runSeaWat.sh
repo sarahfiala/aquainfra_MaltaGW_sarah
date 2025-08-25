@@ -51,8 +51,8 @@ fi
 #---------- RUN THE PYTHON to prepare the name file ---------------------
 source ${venvDir}/bin/activate
 echo "Executing the python script to prepare the input file for the GW model"
-echo "python3 setupSeaWAT.py ${cuser_sealevels} ${csealevel_int} ${cuser_recharge} "
-python3 setupSeaWAT.py ${cuser_sealevels} ${csealevel_int} ${cuser_recharge} 
+echo "python3 setupSeaWAT.combined.py ${cuser_sealevels} ${csealevel_int} ${cuser_recharge} "
+python3 setupSeaWAT.combined.py ${cuser_sealevels} ${csealevel_int} ${cuser_recharge} 
 deactivate
 echo "----------------------------"
 echo
