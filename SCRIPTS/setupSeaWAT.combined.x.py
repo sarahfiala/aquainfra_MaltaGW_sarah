@@ -42,12 +42,6 @@ def setupSeaWAT(user_sealevels, sealevel_int, user_recharge):
     model_name = 'Malta_Model'
     model_dir = os.path.join(project_root, 'model_files', 'malta_simulation', model_name)
     
-    # Define mini_sp_dir (SEAWAT working folder)
-    mini_sp_dir = os.path.join(model_dir, 'malta_sp0', model_name)
-    
-    # Write ALL SEAWAT input files (and the namefile) here:
-    #output_dir = mini_sp_dir
-    
     # Executables
     #imod_path = os.path.join(project_root, 'model_files', 'bin', '_imodwq', '_imodwq', 'imod-wq_svn392_x64r.exe')
     #seawat_exe_dir = os.path.join(project_root, 'model_files', 'bin', 'SEAWAT', 'SEAWAT', 'swt_v4_00_05')
@@ -59,7 +53,6 @@ def setupSeaWAT(user_sealevels, sealevel_int, user_recharge):
 
     # Create directories if they don't exist
     for path in [input_dir, output_dir, model_dir]:
-        print (f"Creating directory {path}");
         os.makedirs(path, exist_ok=True)
 
 
@@ -157,9 +150,8 @@ def setupSeaWAT(user_sealevels, sealevel_int, user_recharge):
         ibound_arr[k, i, j] = 1  # Active cell
 
     #%% Define starting heads (strt_arr) and concentrations (init_conc_arr) CHANGED FROM sconc_arr and strt_arr
-    file_path=os.path.join (input_dir, "initial_equilibrium_state");
-    #file_path="PATH TO/initial_equilibrium_state"
-    df = pd.read_csv(file_path, skiprows=1, header=None)
+    initeqpath = os.path.join (input_dir, "initial_equilibrium_state");
+    df = pd.read_csv(initeqpath, skiprows=1, header=None)
     df.columns = ["X", "Y", "Z", "HEAD", "CONC", "VX", "VY", "VZ"]
     init_head=df["HEAD"].values
 
@@ -207,11 +199,6 @@ def setupSeaWAT(user_sealevels, sealevel_int, user_recharge):
         perlen=perlen, 
         nstp=nstp)
 
-
-    #%% Verifying 30 year period 
-    print("nper:", nper)
-    print("perlen[0]:", perlen[0], "count:", len(perlen))
-    
     #%% BAS Package 
     bas = flopy.modflow.ModflowBas(mswt, ibound = ibound_arr, strt = init_head_arr) #CHANGED FROM strt = strt_arr to init = init_conc_arr
 
@@ -493,7 +480,7 @@ def setupSeaWAT(user_sealevels, sealevel_int, user_recharge):
 #MAIN FUNCTION
 def main ():
     args = getArgs ();
-
+    
     # Convert sea levels string to list
     user_sealevels = ast.literal_eval(args.user_sealevels);
     sealevel_int = args.sealevel_int;
@@ -502,5 +489,6 @@ def main ():
     setupSeaWAT (user_sealevels, sealevel_int, user_recharge);
 
 
+
 if __name__ == "__main__":
- main ();
+     main ();
