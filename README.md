@@ -22,7 +22,7 @@ The output is found in:
 ### 📌 Example Usage
 
 ```bash
-docker run it --name malta-container malta:latest \
+docker run -it --name malta-container malta:latest \
   --user_sealevels "[-3.0, -2.0, -1.0]" \
   --sealevel_int 250 \
   --user_recharge 0.002
