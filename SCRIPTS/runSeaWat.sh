@@ -31,20 +31,44 @@ cuser_sealevels=""
 csealevel_int=""
 cuser_recharge=""
 
-if [ $# -gt 0 ];
-then
-	cuser_sealevels="--user_sealevels \"$1\""	
-fi
+# Loop through all arguments
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --user_sealevels)
+      # All of the below lead to the array being passed as several args, not just one,
+      # leading to: error: unrecognized arguments: -2.0, -1.0]'
+      #cuser_sealevels="--user_sealevels \"$2\""
+      #cuser_sealevels="--user_sealevels $2"
+      #cuser_sealevels="--user_sealevels \"'$2'\""
+      #cuser_sealevels="--user_sealevels \"[$2]\""
+      #cuser_sealevels="--user_sealevels=\"$2\""
+      cuser_sealevels="--user_sealevels='$2'"
+      echo "DEBUG: cuser_sealevels: ${cuser_sealevels}"
+      shift 2
+      ;;
+    --sealevel_int)
+      # this way it is passed as a quoted string:
+      #csealevel_int="--sealevel_int \"$2\""
+      # this way it is passed as a number, without quotes:
+      csealevel_int="--sealevel_int $2"
+      echo "DEBUG: csealevel_int: ${csealevel_int}"
+      shift 2
+      ;;
+    --user_recharge)
+      # this way it is passed as a quoted string:
+      #cuser_recharge="--user_recharge \"$2\""
+      # this way it is passed as a number, without quotes:
+      cuser_recharge="--user_recharge $2"
+      echo "DEBUG: cuser_recharge: ${cuser_recharge}"
+      shift 2
+      ;;
+    *)
+      echo "Unknown argument: $1"
+      shift
+      ;;
+  esac
+done
 
-if [ $# -gt 1 ];
-then
-	csealevel_int="--sealevel_int \"$2\""	
-fi
-
-if [ $# -gt 2 ];
-then
-	cuser_recharge="--user_recharge \"$3\""	
-fi
 
 
 

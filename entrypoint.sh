@@ -1,5 +1,6 @@
 #!/bin/sh
 cd /app/SCRIPTS
+echo "Running runSeaWat.sh with arguments: $@"
 "/app/SCRIPTS/runSeaWat.sh" "$@"
 
 
