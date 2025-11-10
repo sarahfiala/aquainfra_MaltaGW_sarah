@@ -1,0 +1,76 @@
+{
+    "version": "0.1.0",
+    "id": "malta-groundwater",
+    "title": {
+        "en": "Malta Groundwater (WIP)"
+    },
+    "description": {
+        "en": "TODO... SEAWAT... blabla"
+    },
+    "jobControlOptions": ["sync-execute", "async-execute"],
+    "keywords": ["AquaINFRA", "catalunya use case", "MITgcm"],
+    "links": [{
+        "type": "text/html",
+        "rel": "about",
+        "title": "Website of SEAWAT (correct?)",
+        "href": "https://www.usgs.gov/software/seawat-a-computer-program-simulation-three-dimensional-variable-density-ground-water-flow",
+        "hreflang": "en-US"
+    },
+    {
+        "type": "text/html",
+        "rel": "about",
+        "title": "GitHub repo of MITgcm",
+        "href": "https://github.com/MITgcm/MITgcm",
+        "hreflang": "en-US"
+    }],
+    "inputs": {
+        "user_sealevels": {
+            "title": "user_sealevels (TODO)",
+            "description": "user_sealevels (TODO), list of decimal numbers",
+            "schema": {
+                "type": "number"
+            },
+            "minOccurs": 0,
+            "maxOccurs": 1,
+            "keywords": ["SEAWAT", "AquaINFRA"]
+        },
+        "sealevel_int": {
+            "title": "sealevel_int (TODO)",
+            "description": "sealevel_int (TODO), integer number.",
+            "schema": {
+                "type": "integer"
+            },
+            "minOccurs": 0,
+            "maxOccurs": 1,
+            "keywords": ["SEAWAT", "AquaINFRA"]
+        },
+        "user_recharge": {
+            "title": "user_recharge (TODO)",
+            "description": "user_recharge (TODO), decimal number",
+            "schema": {
+                "type": "number"
+            },
+            "minOccurs": 0,
+            "maxOccurs": 1,
+            "keywords": ["SEAWAT", "AquaINFRA"]
+        }
+    },
+    "outputs": {
+        "netcdf_output_file" : {
+            "title": "Some netcdf salt flow file (TODO)",
+            "description": "description (TODO).",
+            "schema": {
+                "type": "object",
+                "contentMediaType": "application/json"
+            }
+        }
+    },
+    "example": {
+        "inputs": {
+            "sealevel_int": 250,
+            "user_recharge": 0.002,
+            "user_sealevels": [-3.0, -2.0, -1.0]
+        }
+    }
+}
+
