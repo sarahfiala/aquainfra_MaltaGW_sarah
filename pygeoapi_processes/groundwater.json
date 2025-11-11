@@ -2,7 +2,7 @@
     "version": "0.1.0",
     "id": "malta-groundwater",
     "title": {
-        "en": "Malta Groundwater Salinity Model (SEAWAT)"
+        "en": "Malta Groundwater Model (SEAWAT)"
     },
     "description": {
         "en": "This process runs a 3D variable-density groundwater flow and transport model (SEAWAT) for the Malta aquifer system. It is configured to simulate the effects of sea-level changes and groundwater recharge on aquifer salinity over a 30-year period. Users can provide custom sea-level projections and recharge rates to test different scenarios."
