@@ -21,11 +21,21 @@ The output is found in:
 
 ### 📌 Example Usage
 
+
+How to build the docker image:
+
+```bash
+today=$(date '+%Y%m%d')
+docker build -t maltagw:${today}
+```
+
+How to run the docker image:
+
 ```bash
 mkdir ./results
 docker run -it \
   -v "./results:/out:rw" \
-  --name malta-container malta:latest \
+  --name malta-container maltagw:${today} \
   --user_sealevels "[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]" \
   --sealevel_int 1 \
   --user_recharge 0.00027
@@ -36,6 +46,6 @@ You can also run without parameters. Then the model will pick the default values
 ```bash
 docker run -it \
   -v "./results:/out:rw" \
-  --name malta-container malta:latest
+  --name malta-container maltagw:${today}
 ```
 
