@@ -11,6 +11,8 @@ from pygeoapi.process.aquainfra_MaltaGW.pygeoapi_processes.utils import log_dock
 from pygeoapi.process.aquainfra_MaltaGW.pygeoapi_processes.utils import get_error_message_from_docker_stderr
 
 '''
+
+# To run the model with the values provided by the user
 curl -i -X POST "https://${PYSERVER}/processes/malta-groundwater/execution" \
 --header "Content-Type: application/json" \
 --header "Prefer: respond-async" \
@@ -21,6 +23,15 @@ curl -i -X POST "https://${PYSERVER}/processes/malta-groundwater/execution" \
     "user_sealevels": [-3.0, -2.0, -1.0]
   }
 }'
+
+# To run the model with the default values defined in the containe# To run the model with the default values defined in the container
+curl -i -X POST "https://${PYSERVER}/processes/malta-groundwater/execution" \
+--header "Content-Type: application/json" \
+--header "Prefer: respond-async" \
+--data '{
+  "inputs": {}
+}'
+
 '''
 
 LOGGER = logging.getLogger(__name__)
@@ -67,32 +78,35 @@ class MaltaGroundwaterProcessor(BaseProcessor):
         ###################
 
         # Get the inputs:
-        user_sealevels = data.get('user_sealevels', [-3.0, -2.0, -1.0])
-        sealevel_int = data.get('sealevel_int', 250)
-        user_recharge = data.get('user_recharge', 0.002)
+        user_sealevels = data.get('user_sealevels', None)
+        sealevel_int = data.get('sealevel_int', None)
+        user_recharge = data.get('user_recharge', None)
 
 
-        # Checking all input parameters presence:
-        allvars = ['user_sealevels', 'sealevel_int', 'user_recharge']
-        for varname in allvars:
-            if locals()[varname] is None:
-                err_msg = 'Missing input parameter: %s' % varname
+        # Check if the numbers are the correct numeric format
+        # (unless they are not set)
+        if sealevel_int is None:
+            pass
+        else:
+            try:
+                sealevel_int = int(sealevel_int)
+            except TypeError as e:
+                err_msg = 'sealevel_int ("%s") is not an integer, but a "%s"' % (sealevel_int, type(sealevel_int))
                 LOGGER.error(err_msg)
                 raise ProcessorExecuteError(err_msg)
 
-        try:
-            sealevel_int = int(sealevel_int)
-        except TypeError as e:
-            err_msg = 'sealevel_int ("%s") is not an integer, but a "%s"' % (sealevel_int, type(sealevel_int))
-            LOGGER.error(err_msg)
-            raise ProcessorExecuteError(err_msg)
+        if user_recharge is None:
+            pass
+        else:
+            try:
+                user_recharge = float(user_recharge)
+            except TypeError as e:
+                err_msg = 'user_recharge ("%s") is not a float, but a "%s"' % (user_recharge, type(user_recharge))
+                LOGGER.error(err_msg)
+                raise ProcessorExecuteError(err_msg)
 
-        try:
-            user_recharge = float(user_recharge)
-        except TypeError as e:
-            err_msg = 'user_recharge ("%s") is not a float, but a "%s"' % (user_recharge, type(user_recharge))
-            LOGGER.error(err_msg)
-            raise ProcessorExecuteError(err_msg)
+        if user_sealevels is None:
+            pass
 
 
 
@@ -112,15 +126,18 @@ class MaltaGroundwaterProcessor(BaseProcessor):
         ### Run model in container ###
         ##############################
 
-        script_args = [
-            '--user_sealevels', str(user_sealevels),
-            '--sealevel_int', str(sealevel_int),
-            '--user_recharge', str(user_recharge)
-        ]
+        script_args = []
+        if user_sealevels is not None:
+            script_args.append(str(user_sealevels))
+        if sealevel_int is not None:
+            script_args.append(str(sealevel_int))
+        if user_recharge is not None:
+            script_args .append(str(user_recharge))
+
         LOGGER.debug('SCRIPT ARGS: %s' % script_args)
 
         '''
-        docker run it --name malta-container malta:latest \
+        docker run it  maltagw:latest \
           --user_sealevels "[-3.0, -2.0, -1.0]" \
           --sealevel_int 250 \
           --user_recharge 0.002
@@ -200,7 +217,10 @@ class MaltaGroundwaterProcessor(BaseProcessor):
         docker_args = docker_args + [image_name]
 
         # Add the arguments to be passed to the script:
-        docker_command = docker_args + script_args
+        if len(script_args) == 0:
+            docker_command = docker_args
+        else:
+            docker_command = docker_args + script_args
 
         # Run container
         LOGGER.debug('Docker command: %s' % docker_command)

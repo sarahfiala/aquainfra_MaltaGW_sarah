@@ -1,6 +1,7 @@
 {
     "version": "0.1.0",
     "id": "malta-groundwater",
+    "use_case": "Malta",
     "title": {
         "en": "Malta Groundwater Model (SEAWAT)"
     },
