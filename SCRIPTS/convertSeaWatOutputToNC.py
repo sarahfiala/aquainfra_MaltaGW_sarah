@@ -38,6 +38,8 @@ def extract_coordinates(dis_path):
 def load_ucn(ucn_path):
     ucn = bf.UcnFile(ucn_path)
     times = ucn.get_times()
+    times=np.round(times).astype(int)
+    times=np.unique(times)
     conc_data = [ucn.get_data(totim=t) for t in times]
     conc_array = np.array(conc_data)  # shape: (ntime, nlay, nrow, ncol)
     print(f"✅ Loaded UCN file with shape: {conc_array.shape} and {len(times)} time steps")
