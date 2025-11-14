@@ -373,7 +373,7 @@ def setupSeaWAT(user_sealevels, sealevel_int, user_recharge):
 		mcomp=1,
         dt0=1000,                   # initial transport timestep
         nprs=nprs,
-        timprs=None,
+        timprs=timprs_1st,
         ifmtcn=ifmtcn,
         chkmas=chkmas,
         nprobs=nprobs,
@@ -503,5 +503,6 @@ def main ():
 
 if __name__ == "__main__":
  main ();
+
 
 
