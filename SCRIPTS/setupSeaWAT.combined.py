@@ -357,7 +357,7 @@ def setupSeaWAT(user_sealevels, sealevel_int, user_recharge):
     #   the BTN package
     porosity = poro_arr
     dt0 = 1000
-    nprs = 1
+    nprs = nprs
     ifmtcn = 0
     chkmas = False
     nprmas = 10
@@ -374,7 +374,7 @@ def setupSeaWAT(user_sealevels, sealevel_int, user_recharge):
 		mcomp=1,
         dt0=1000,                   # initial transport timestep
         nprs=nprs,
-        timprs=timprs_lst,
+        timprs=None,
         ifmtcn=ifmtcn,
         chkmas=chkmas,
         nprobs=nprobs,
@@ -504,3 +504,4 @@ def main ():
 
 if __name__ == "__main__":
  main ();
+
