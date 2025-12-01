@@ -55,7 +55,7 @@ class MaltaGroundwaterProcessor(BaseProcessor):
         self.supports_outputs = True # TODO: Is this not outdated/deprecated by now? Check!
         self.job_id = None
         self.process_id = self.metadata["id"]
-        self.image_name = 'maltagw:20251106'
+        self.image_name = 'maltagw:20251201'
 
         # Set config:
         config_file_path = os.environ.get('AQUAINFRA_CONFIG_FILE', "./config.json")

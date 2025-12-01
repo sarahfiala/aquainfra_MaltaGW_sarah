@@ -372,8 +372,8 @@ def setupSeaWAT(user_sealevels, sealevel_int, user_recharge):
         ncomp=1,                     # ✅ REQUIRED: number of components (salinity = 1)
 		mcomp=1,
         dt0=1000,                   # initial transport timestep
-        nprs=nprs,
-        timprs=timprs_1st,
+        #nprs=nprs,
+        #timprs=timprs_1st,
         ifmtcn=ifmtcn,
         chkmas=chkmas,
         nprobs=nprobs,
