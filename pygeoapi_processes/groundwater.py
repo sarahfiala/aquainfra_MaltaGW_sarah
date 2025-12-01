@@ -128,11 +128,14 @@ class MaltaGroundwaterProcessor(BaseProcessor):
 
         script_args = []
         if user_sealevels is not None:
+            script_args.append("--user_sealevels")
             script_args.append(str(user_sealevels))
         if sealevel_int is not None:
+            script_args.append("--sealevel_int")
             script_args.append(str(sealevel_int))
         if user_recharge is not None:
-            script_args .append(str(user_recharge))
+            script_args.append("--user_recharge")
+            script_args.append(str(user_recharge))
 
         LOGGER.debug('SCRIPT ARGS: %s' % script_args)
 
